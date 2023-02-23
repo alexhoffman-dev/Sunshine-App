@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunshine App</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id='title-bar'>
+        <h1>Where is the Sunshine?</h1>
+    </div>
+    <div id="address-query">
+        <h2>What is your current address?</h2>
+        <p style="font-family:'Times New Roman', Times, serif; font-style: italic; font-size: 15px;">Example: 1234 Drury Ln Pittsburgh PA 15106 </p>
+        <input type="search" placeholder="street, city, state, zip" id="adress-input" required>
+    </div>
+    <div id="location-display" class="hidden">
+        <h2>Your Current Location</h2>
+        <br>
+        <div id="coordinates">
+            <span id="lat-display">X: -- </span>
+            <span id="long-display">Y: -- </span>
+        </div>
+    </div>
+    <button id="find-sun-button" class="hidden"> 
+        Find it!
+    </button>
+    <!-- <form id="location-form">
+        <p>This App is designed to tell you where to find a patch 
+        <br>of sunshine closest to your current location!</p>
+        <p> Please provide your current location ie: 3336 SE 7th Ave Portland OR 97202,
+        <br> so we can get started!</p>
+        <br>
+        <label>Current Address:</label>
+        <input type="text">
+        <input type="submit">
+    </form> -->
+
+<script src="app.js"></script>
+</body>
+</html>
