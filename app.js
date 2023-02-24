@@ -20,11 +20,12 @@ const locationStatusText = document.getElementById('status');
 const latDisplay = document.getElementById('lat-display');
 const longDisplay = document.getElementById('long-display');
 const userLocationContainer = document.getElementById('user-location-container'); 
+const closestSunshineLocaton = document.getElementById('closest-sunshine-location'); 
 
 // ARM BUTTONS 
 findSunButton.addEventListener('click', initSunshineSearch);
 geolocateButton.addEventListener('click', geolocateUser);
-addressInput.addEventListener('search', findCoordinates);
+addressInput.addEventListener('search', findManualCoordinates);
 
 
 async function geolocateUser() {
@@ -40,7 +41,7 @@ function manaullyEnterLocation() {
     geolocateButton.classList.add('hidden');
 }
 
-async function findCoordinates(event) {
+async function findManualCoordinates(event) {
     let searchValue = event.target.value.toUpperCase();
     let stringSearchValue = searchValue.replaceAll(' ','+')
     if (stringSearchValue == '') {
@@ -57,13 +58,12 @@ async function findCoordinates(event) {
 
 async function initSunshineSearch(event) {
     transitionBackground();
-    let isSunny = getSunnyAtCoords().sunny;
-
+    let isSunny = await isSunnyAtCoords();
+    debugger;
     if (isSunny) {
-        document.getElementById('closest-sunshine-location').innerHTML = userCity;
+        closestSunshineLocaton.innerHTML = userCity;
         return;
     } 
-    //debugger;
     let X = parseFloat(userLatitude);
     let Y = parseFloat(userLongitude); 
     let pathDistance = 1;
@@ -71,7 +71,8 @@ async function initSunshineSearch(event) {
     let isPositive = true; 
     let changeY = false;
     let timer = 0;  
-    
+    // this logic takes our starting X, Y coordinates and increments on them .5 degrees at a time
+    // in an Ulam Spiral shape to find a truthy 'SUN' value in that points forecast JSON
     while (timer < 20 && !isSunny) {
         
         if (!changeY) {
@@ -81,7 +82,7 @@ async function initSunshineSearch(event) {
             Y = isPositive ? Y + 0.5 : Y - 0.5;
             stepAmount++
         }
-        isSunny = getSunnyAtCoords(X , Y).sunny; 
+        isSunny = isSunnyAtCoords(X , Y); 
         if (stepAmount === pathDistance) {
             if (changeY) {
                 pathDistance++; 
@@ -92,17 +93,17 @@ async function initSunshineSearch(event) {
         } 
         timer++;
         if (isSunny) {
-
-            document.getElementById('closest-sunshine-location').innerHTML = `Coordinates: ${X}, ${Y} `; 
+            closestSunshineLocaton.innerHTML = `Coordinates: ${X}, ${Y} `;
+            document.getElementById('maps-link').href = `https://www.google.com/maps/search/?api=1&query=${X}%2C${Y}`
         };
         if (timer === 20) {
-            document.getElementById('closest-sunshine-location').innerHTML = 'not a lick of sunshine nearby'
+            closestSunshineLocaton.innerHTML = 'not a lick of sunshine nearby'
         }
     }
 
 }
 
-async function getSunnyAtCoords(lat = userLatitude, long = userLongitude) {
+async function isSunnyAtCoords(lat = userLatitude, long = userLongitude) {
     let APISearch = await fetch(`${weatherAPI}${lat},${long}`);
     let APIResults = await APISearch.json();
     let userLocationForeacstURL = APIResults.properties.forecast //url for next api crunch 
@@ -112,15 +113,12 @@ async function getSunnyAtCoords(lat = userLatitude, long = userLongitude) {
     return findSunshine(userLocationForeacstURL);
 }
 
-//returns an object { boolean , coordinates array }
+//returns an object boolean
 async function findSunshine(forecastURL) {
     let APISearch = await fetch(forecastURL); 
     let APIResults = await APISearch.json(); 
     let variable = APIResults.properties.periods[0].detailedForecast.toUpperCase();
-    return {
-        sunny: variable.includes("SUN"), 
-        coordinates: APIResults.geometry.coordinates[0]
-    }
+    return variable.includes("SUN")
 }
 
 function displayCurrentLocation(locationObject) {

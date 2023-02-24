@@ -24,12 +24,10 @@ h3 {
     margin: 5px;
     color: gold;
     font-family: Arial, Helvetica, sans-serif; 
-
 }
 input {
     width: 350px;
 }
-
 button {
     width: 250px;
     height: 60px;
@@ -40,11 +38,9 @@ button {
     margin: 15px;
     background-color:rgb(237, 237, 140)
 }
-
 .hidden {
     display: none !important;
 }
-
 #title-bar {
     display: flex;
     justify-content: center;
@@ -80,14 +76,14 @@ button {
     margin: 5px;
     background-color:rgb(237, 237, 140)
 }
-
 #lat-display, #long-display {
     font-size: 35px;
     font-family: monospace;
 }
-
-#user-location-container:hr {
-    border: 2px;
-    color: gold;
-    width: 200px;
+hr {
+    border: 1px solid gold;
+    width: 350px;
+}
+#closest-sunshine-location {
+    font-size: 30px;
 }
