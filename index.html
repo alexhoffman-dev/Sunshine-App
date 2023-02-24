@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunshine App</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id='title-bar'>
+        <h1>Where is the Sunshine?</h1>
+    </div>
+    <div id="current-location-query" class="container">
+        <h2>What is your current address?</h2>
+        <p id="status"></p>
+        <button id="geolocate-button">Find my Location!</button>
+        <div id="address-query" class="hidden">
+            <h2>Please enter your address below: </h2>
+            <p style="font-family:'Times New Roman', Times, serif; font-style: italic; font-size: 15px;">Example: 1234 Drury Ln Pittsburgh PA 15106 </p>
+            <input type="search" placeholder="street, city, state, zip" id="adress-input" required>
+        </div>
+    </div>
+    <div id="location-display" class="container hidden">
+        <h2>Your Current Location</h2>
+        <br>
+        <div id="coordinates">
+            <span id="lat-display"></span>
+            <br>
+            <span id="long-display"></span>
+        </div>
+    </div>
+    <button id="find-sun-button" class="hidden"> 
+        Find the Sun!
+    </button>
+    <div id="user-location-container" class="container hidden">
+        <h3>Currently, the closest sunshine to you in <span id="city">your current location</span>, <span id='state'></span> is:</h3>
+        <hr>
+        <a id="maps-link">
+            <div id="closest-sunshine-location"></div>
+        </a>
+    </div>
+<script src="app.js"></script>
+</body>
+</html>
