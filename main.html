@@ -12,33 +12,33 @@
     <div id='title-bar'>
         <h1>Where is the Sunshine?</h1>
     </div>
-    <div id="address-query">
+    <div id="current-location-query" class="container">
         <h2>What is your current address?</h2>
-        <p style="font-family:'Times New Roman', Times, serif; font-style: italic; font-size: 15px;">Example: 1234 Drury Ln Pittsburgh PA 15106 </p>
-        <input type="search" placeholder="street, city, state, zip" id="adress-input" required>
+        <p id="status"></p>
+        <button id="geolocate-button">Find my Location!</button>
+        <div id="address-query" class="hidden">
+            <h2>Please enter your address below: </h2>
+            <p style="font-family:'Times New Roman', Times, serif; font-style: italic; font-size: 15px;">Example: 1234 Drury Ln Pittsburgh PA 15106 </p>
+            <input type="search" placeholder="street, city, state, zip" id="adress-input" required>
+        </div>
     </div>
-    <div id="location-display" class="hidden">
+    <div id="location-display" class="container hidden">
         <h2>Your Current Location</h2>
         <br>
         <div id="coordinates">
-            <span id="lat-display">X: -- </span>
-            <span id="long-display">Y: -- </span>
+            <span id="lat-display"></span>
+            <br>
+            <span id="long-display"></span>
         </div>
     </div>
     <button id="find-sun-button" class="hidden"> 
-        Find it!
+        Find the Sun!
     </button>
-    <!-- <form id="location-form">
-        <p>This App is designed to tell you where to find a patch 
-        <br>of sunshine closest to your current location!</p>
-        <p> Please provide your current location ie: 3336 SE 7th Ave Portland OR 97202,
-        <br> so we can get started!</p>
-        <br>
-        <label>Current Address:</label>
-        <input type="text">
-        <input type="submit">
-    </form> -->
-
+    <div id="user-location-container" class="container ">
+        <h3>Currently, the closest sunshine to you in <span id="city">your current location</span>, <span id='state'></span> is:</h3>
+        <hr>
+        <div id="closest-sunshine-location"></div>
+    </div>
 <script src="app.js"></script>
 </body>
 </html>
