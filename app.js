@@ -2,15 +2,15 @@
 // i.e. https://api.weather.gov/points/{lat},{lon}
 const weatherAPI = 'https://api.weather.gov/points/'; 
 // Geocoding API endpoint needs requests to follow this pattern: 
-// need to find a new one that uses https protocol 
-const geoCodingAPI = '';
+const geoCodingAPIkey = '121c73b526be40d5ae4173c60efd311a'; 
+let userAddress;
+let geoCodingAPIForwardEndpoint = `https://api.geoapify.com/v1/geocode/search?text=address&format=json&apiKey=${geoCodingAPIkey}`
 let userCity; 
 let userLatitude; 
 let userLongitude;
 
-
 // LINK DOM ELEMENTS 
-const addressInput = document.getElementById('adress-input');
+const manualAddressInput = document.getElementById('adress-input');
 const findSunButton = document.getElementById('find-sun-button');
 const addressContainer = document.getElementById('address-query');
 const locationQueryContainer = document.getElementById('current-location-query');
@@ -25,7 +25,7 @@ const closestSunshineLocaton = document.getElementById('closest-sunshine-locatio
 // ARM BUTTONS 
 findSunButton.addEventListener('click', initSunshineSearch);
 geolocateButton.addEventListener('click', geolocateUser);
-addressInput.addEventListener('search', findManualCoordinates);
+manualAddressInput.addEventListener('search', findManualCoordinates);
 
 
 async function geolocateUser() {
@@ -42,24 +42,27 @@ function manaullyEnterLocation() {
 }
 
 async function findManualCoordinates(event) {
-    let searchValue = event.target.value.toUpperCase();
-    let stringSearchValue = searchValue.replaceAll(' ','+')
-    if (stringSearchValue == '') {
+    let searchValue = event.target.value.toUpperCase().replaceAll(' ','%20');
+    let sanitizedQuery = searchValue.replaceAll(',','%2C');
+    if (sanitizedQuery == '') {
         console.error('You need to enter a valid address')
         return
     } 
-    let APISearch = await fetch(`${geoCodingAPI.replace('search',stringSearchValue)}`, {referrerPolicy: 'unsafe-url' 
-}); 
+    let userAddress = geoCodingAPIForwardEndpoint.replace('address',`${sanitizedQuery}`);
+    console.log(userAddress);
+    let APISearch = await fetch(`${userAddress}`); 
     let APIResults = await APISearch.json();
     console.log(APIResults);
-    let coordinates = await APIResults.result.addressMatches[0].coordinates
-    displayCoordinates(coordinates);
+    userLatitude = APIResults.results[0].lat; 
+    userLongitude = APIResults.results[0].lon;
+    displayCoordinates(userLatitude, userLongitude);
+    //let coordinates = await APIResults.result.addressMatches[0].coordinates
+    //displayCoordinates(coordinates);
 }
 
 async function initSunshineSearch(event) {
     transitionBackground();
     let isSunny = await isSunnyAtCoords();
-    debugger;
     if (isSunny) {
         closestSunshineLocaton.innerHTML = userCity;
         return;
@@ -82,7 +85,7 @@ async function initSunshineSearch(event) {
             Y = isPositive ? Y + 0.5 : Y - 0.5;
             stepAmount++
         }
-        isSunny = isSunnyAtCoords(X , Y); 
+        isSunny = await isSunnyAtCoords(X , Y); 
         if (stepAmount === pathDistance) {
             if (changeY) {
                 pathDistance++; 
@@ -93,6 +96,7 @@ async function initSunshineSearch(event) {
         } 
         timer++;
         if (isSunny) {
+            //debugger;
             closestSunshineLocaton.innerHTML = `Coordinates: ${X}, ${Y} `;
             document.getElementById('maps-link').href = `https://www.google.com/maps/search/?api=1&query=${X}%2C${Y}`
         };
@@ -118,7 +122,8 @@ async function findSunshine(forecastURL) {
     let APISearch = await fetch(forecastURL); 
     let APIResults = await APISearch.json(); 
     let variable = APIResults.properties.periods[0].detailedForecast.toUpperCase();
-    return variable.includes("SUN")
+    let isSunny = variable.includes("SUN");
+    return isSunny;
 }
 
 function displayCurrentLocation(locationObject) {
@@ -151,3 +156,9 @@ function transitionBackground() {
     document.body.style.backgroundColor = 'white'; 
     findSunButton.classList.add('hidden');
 }
+
+
+//  TO D0 
+// - FIX GEOCODING API FOR MANUAL ADDRESS ENTRY 
+// - DESIGN UI FOR 'FAVORITED' LOCATIONS 
+// - 
