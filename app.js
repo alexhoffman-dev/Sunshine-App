@@ -4,10 +4,10 @@ const weatherAPI = 'https://api.weather.gov/points/';
 // Geocoding API endpoint needs requests to follow this pattern: 
 const geoCodingAPIkey = '121c73b526be40d5ae4173c60efd311a'; 
 let userAddress;
-let geoCodingAPIForwardEndpoint = `https://api.geoapify.com/v1/geocode/search?text=address&format=json&apiKey=${geoCodingAPIkey}`
 let userCity; 
 let userLatitude; 
 let userLongitude;
+let geoCodingAPIForwardEndpoint = `https://api.geoapify.com/v1/geocode/search?text=address&format=json&apiKey=${geoCodingAPIkey}`;
 
 // LINK DOM ELEMENTS 
 const manualAddressInput = document.getElementById('adress-input');
@@ -56,8 +56,6 @@ async function findManualCoordinates(event) {
     userLatitude = APIResults.results[0].lat; 
     userLongitude = APIResults.results[0].lon;
     displayCoordinates(userLatitude, userLongitude);
-    //let coordinates = await APIResults.result.addressMatches[0].coordinates
-    //displayCoordinates(coordinates);
 }
 
 async function initSunshineSearch(event) {
@@ -75,7 +73,8 @@ async function initSunshineSearch(event) {
     let changeY = false;
     let timer = 0;  
     // this logic takes our starting X, Y coordinates and increments on them .5 degrees at a time
-    // in an Ulam Spiral shape to find a truthy 'SUN' value in that points forecast JSON
+    // in an Ulam Spiral shape to find a truthy 'SUN' value in that points' forecast JSON
+    // Timer initially set to 20 
     while (timer < 20 && !isSunny) {
         
         if (!changeY) {
@@ -120,7 +119,10 @@ async function isSunnyAtCoords(lat = userLatitude, long = userLongitude) {
 //returns an object boolean
 async function findSunshine(forecastURL) {
     let APISearch = await fetch(forecastURL); 
-    let APIResults = await APISearch.json(); 
+    let APIResults = await APISearch.json();
+    console.log(APIResults);
+    // [0] index of APIResults accesses the current weather data, where [1] returns weather data for 
+    // the next time period ie. this afternoon, evening, or tonight. 
     let variable = APIResults.properties.periods[0].detailedForecast.toUpperCase();
     let isSunny = variable.includes("SUN");
     return isSunny;
@@ -158,7 +160,7 @@ function transitionBackground() {
 }
 
 
-//  TO D0 
-// - FIX GEOCODING API FOR MANUAL ADDRESS ENTRY 
-// - DESIGN UI FOR 'FAVORITED' LOCATIONS 
-// - 
+//  ***** TO D0 *****
+// - DESIGN UI FOR 'FAVORITED' LOCATIONS + log in + simple back end for storing locations
+// - FIX TRY/RETRY ASYNC CALL @ isSunnyAtCoords
+//  ***** TO D0 *****
