@@ -100,7 +100,7 @@ async function initSunshineSearch(event) {
             Y = isPositive ? Y + 0.5 : Y - 0.5;
             stepAmount++
         }
-        isSunny = await isSunnyAtCoords(X , Y); 
+        isSunny = await isSunnyAtCoords(X , Y);
         if (stepAmount === pathDistance) {
             if (changeY) {
                 pathDistance++; 
@@ -108,7 +108,7 @@ async function initSunshineSearch(event) {
             }
             stepAmount = 0; 
             changeY = !changeY; 
-        } 
+        }
         timer++;
         if (isSunny) {
             //debugger;
