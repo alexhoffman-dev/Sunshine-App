@@ -126,15 +126,35 @@ async function isSunnyAtCoords(lat = userLatitude, long = userLongitude) {
     let response = await fetch(`${weatherAPI}${lat},${long}`);
     let parsedResponse = await response.json();
     let userLocationForecastURL = parsedResponse.properties.forecast // url for next api crunch 
+    if (userLocationForecastURL == null) {
+        debugger;
+    }
+    if (response.status != 200) {
+        debugger;
+    }
     if (lat === userLatitude && long === userLongitude) {
         displayCurrentLocation(parsedResponse.properties.relativeLocation.properties);
     }; 
     return isSunnyAtGridPoint(userLocationForecastURL);
 }
 
-async function isSunnyAtGridPoint(forecastURL) {
+async function isSunnyAtGridPoint(forecastURL, tries = 1) {
     let response = await fetch(forecastURL);
     let parsedResponse = await response.json();
+    if (response.status != 200) {
+        if (response.status == 500) {
+            debugger;
+            tries++;
+            if (tries < 20 ) {
+                return isSunnyAtGridPoint(forecastURL);
+            } else {
+                return false;
+            }
+        }
+        if (parsedResponse.title === "Marine Forecast Not Supported") {
+            return false;
+        }
+    }
     console.log(parsedResponse);
     // [0] index of parsedResponse accesses the current weather data, where [1] returns weather data for 
     // the next time period ie. this afternoon, evening, or tonight. 
